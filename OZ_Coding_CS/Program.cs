@@ -9,6 +9,8 @@ namespace OZ_Coding_CS
         {
             int coffeePrice = 0;
             float naftaWeight = 5.5f;
+
+            //dddd
         }
     }
 }
