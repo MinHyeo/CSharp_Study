@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E032DAD9-4074-4A0D-8328-F81350936F9F}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>OZ_Coding_CS</RootNamespace>
-    <AssemblyName>OZ_Coding_CS</AssemblyName>
+    <RootNamespace>CSharp_Study</RootNamespace>
+    <AssemblyName>CSharp_Study</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace OZ_Coding_CS
+namespace CSharp_Study
 {
     public enum AirConditionerMode
     {
