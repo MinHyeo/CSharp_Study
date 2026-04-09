@@ -10,31 +10,32 @@ namespace CSharp_Study
 {
     public class FantasticCreature
     {
-        private int _id;
+        public int Id { get; private set; }
         public string Name { get; private set; }
 
         public FantasticCreature(int id, string name)
         {
-            _id = id;
+            Id = id;
             Name = name;
         }
 
         public void PrintInfo()
         {
-            Console.WriteLine($"{_id} : {Name}");
+            Console.WriteLine($"{Id} : {Name}");
         }
     }
 
     public class CreatureDictionary
     {
-        private Dictionary<int ,FantasticCreature> _creatureDictionary;
-        private int _lastId;
+        List<string> _creatureNameList;
+        private Dictionary<string ,FantasticCreature> _creatureDictionary;
+        private const int minId = 1000;
 
         // 사전 초기화
         public void Init()
         {
-            _creatureDictionary = new Dictionary<int, FantasticCreature>();
-            _lastId = 1000;
+            _creatureNameList = new List<string>();
+            _creatureDictionary = new Dictionary<string, FantasticCreature>();
         }
 
         public void PrintOption()
@@ -91,30 +92,33 @@ namespace CSharp_Study
             // 입력이 숫자면 id로 검색
             if(int.TryParse(input, out int id))
             {
-                if (_creatureDictionary.ContainsKey(id))
+                int listIndex = id - minId;
+
+                if(listIndex >= 0 && listIndex < _creatureNameList.Count && _creatureNameList.Count > 0)
                 {
-                    FantasticCreature creature = _creatureDictionary[id];
+                    string creatureName = _creatureNameList[listIndex];
+                    if (_creatureDictionary.ContainsKey(creatureName))
+                    {
+                        FantasticCreature creature = _creatureDictionary[creatureName];
+                        Console.WriteLine("--------------------------------------");
+                        creature.PrintInfo();
+                        Console.WriteLine("--------------------------------------");
+
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                string creatureName = input;
+                if (_creatureDictionary.ContainsKey(creatureName))
+                {
+                    FantasticCreature creature = _creatureDictionary[creatureName];
                     Console.WriteLine("--------------------------------------");
                     creature.PrintInfo();
                     Console.WriteLine("--------------------------------------");
 
                     return;
-                }
-            }
-            else
-            {
-                string name = input;
-                foreach(var createrePair in _creatureDictionary)
-                {
-                    FantasticCreature creature = createrePair.Value;
-
-                    if(creature.Name == name)
-                    {
-                        Console.WriteLine("--------------------------------------");
-                        creature.PrintInfo();
-                        Console.WriteLine("--------------------------------------");
-                        return;
-                    }
                 }
             }
 
@@ -126,28 +130,22 @@ namespace CSharp_Study
         {
             Console.Write("추가할 동물의 이름을 입력해주세요 : ");
             string name = Console.ReadLine();
-            int id = _lastId;
 
             // TODO : 중복 검사 기능 추가해야 함
             if (!CheckOverlapCreature(name))
             {
+                int id = minId + _creatureNameList.Count;
                 FantasticCreature fantasticCreature = new FantasticCreature(id, name);
-                _creatureDictionary[id] = fantasticCreature;
-
-                _lastId = id + 1;
+                _creatureDictionary[name] = fantasticCreature;
+                _creatureNameList.Add(name);
             }        
         }
 
+        // 중복된 이름의 동물이 있는지 체크
         private bool CheckOverlapCreature(string name)
         {
-            foreach(var creaturePair in _creatureDictionary)
-            {
-                FantasticCreature creature = creaturePair.Value;
-
-                if (creature.Name == name)
-                    return true;
-            }
-
+            if (_creatureDictionary.ContainsKey(name))
+                return true;
             return false;
         }
 
@@ -161,27 +159,34 @@ namespace CSharp_Study
             // 입력이 숫자면 id로 검색
             if (int.TryParse(input, out int id))
             {
-                if (_creatureDictionary.ContainsKey(id))
-                {
-                    _creatureDictionary.Remove(id);
-                    Console.WriteLine("정상적으로 삭제되었습니다.");
-                    return;
-                }
-            }
-            else
-            {
-                string name = input;
-                foreach (var createrePair in _creatureDictionary)
-                {
-                    id = createrePair.Key;
-                    FantasticCreature creature = createrePair.Value;
+                int listIndex = id - minId;
 
-                    if (creature.Name == name)
+                if (listIndex >= 0 && listIndex < _creatureNameList.Count && _creatureNameList.Count > 0)
+                {
+                    string creatureName = _creatureNameList[listIndex];
+
+                    if (_creatureDictionary.ContainsKey(creatureName))
                     {
-                        _creatureDictionary.Remove(id);
+                        _creatureDictionary.Remove(creatureName);
+                        _creatureNameList[id] = "-";
                         Console.WriteLine("정상적으로 삭제되었습니다.");
                         return;
                     }
+                }
+                
+            }
+            else
+            {
+                string creatureName = input;
+
+                if (_creatureDictionary.ContainsKey(creatureName))
+                {
+                    id = _creatureDictionary[creatureName].Id - minId;
+                    _creatureDictionary.Remove(creatureName);
+                    _creatureNameList[id] = "-";
+                    Console.WriteLine("정상적으로 삭제되었습니다.");
+
+                    return;
                 }
             }
 
@@ -191,25 +196,29 @@ namespace CSharp_Study
         // 전체 조회
         private void SearchAll()
         {
-            int lastId = 1000;
-
             Console.WriteLine("전체 목록");
             Console.WriteLine("--------------------------------------");
-            foreach(var creaturePair in _creatureDictionary)
+            for (int i = 0; i < _creatureNameList.Count; i++)
             {
-                int id = creaturePair.Key;
-                FantasticCreature creature = creaturePair.Value;
+                int id = i + minId;
+                string name = _creatureNameList[i];
 
-                // 앞에 비어있는 만큼 빈 공간 출력
-                int idx = id - lastId;
-                for (int i = 1; i <= idx - 1; i++)
-                {
-                    Console.WriteLine($"{lastId + i} : -");
-                }
-                creature.PrintInfo();
-
-                lastId = id;
+                Console.WriteLine($"{id} : {name}");
             }
+            //foreach(var creaturePair in _creatureDictionary)
+            //{
+            //    FantasticCreature creature = creaturePair.Value;
+
+            //    // 앞에 비어있는 만큼 빈 공간 출력
+            //    int idx = id - lastId;
+            //    for (int i = 1; i <= idx - 1; i++)
+            //    {
+            //        Console.WriteLine($"{lastId + i} : -");
+            //    }
+            //    creature.PrintInfo();
+
+            //    lastId = id;
+            //}
             Console.WriteLine("--------------------------------------");
         }
     }
