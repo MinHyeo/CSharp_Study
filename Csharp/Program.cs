@@ -3,6 +3,14 @@ using System.Collections.Generic;
 
 namespace CSharp_Study
 {
+    public enum Grand
+    {
+        None = 0,
+        Commone,
+        Rare,
+        Epic
+    }
+
     interface IItem
     {
         void Use();
@@ -14,6 +22,25 @@ namespace CSharp_Study
     {
         protected string _name;
         protected string _description;
+
+        // public
+        public Grand Grand { get; set; }
+
+        public string Description
+        {
+            get { return _description; }
+            set { _description = value; }
+        }
+
+        public string GetName()
+        {
+            return _name;
+        }
+
+        public void SetName(string name)
+        {
+            _name = name;
+        }
 
         public Item(string name, string description)
         {
@@ -83,6 +110,14 @@ namespace CSharp_Study
             {
                 item.PrintDescription();
                 item.Use();
+
+                if(item is Item)
+                {
+                    var item2 = item as Item;
+                    item2.SetName("사용한 아이템");
+                    item2.Description = "이미 사용한 아이템입니다.";
+                    item2.Grand = Grand.Commone;
+                }
 
                 if(item is Weapon)
                 {
