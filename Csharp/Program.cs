@@ -5,12 +5,18 @@ namespace CSharp_Study
 {
     class Car
     {
-        public event Action OnCheckLifeBelt;
+        //public event Action OnCheckLifeBelt;
+        public event Func<bool> OnCheckLifeBelt;
 
         public void CheckLifeBeltInCar()
         {
             Console.WriteLine("안전벨트 착용 여부를 검사합니다.");
-            OnCheckLifeBelt?.Invoke();
+
+            bool? isWearLifeBelt = OnCheckLifeBelt?.Invoke();
+            if (isWearLifeBelt == true)
+                Console.WriteLine("모두 착용하였습니다.");
+            else
+                Console.WriteLine("안전벨트를 착용하지 않은 인원이 있습니다.");
         }
     }
 
@@ -23,9 +29,11 @@ namespace CSharp_Study
             _name = name;
         }
 
-        public void CheckLifeBelt()
+        public bool CheckLifeBelt()
         {
             Console.WriteLine($"{_name}은 안전벨트를 착용하였습니다.");
+
+            return true;
         }
     }
 
